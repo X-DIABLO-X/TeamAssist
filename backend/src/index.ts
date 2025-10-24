@@ -49,6 +49,15 @@ app.use(session(sessionConfig) as unknown as RequestHandler);
 app.use(passport.initialize());
 app.use(passport.session());
 
+// Debug middleware to log session state
+app.use((req, res, next) => {
+  console.log("Session ID:", req.sessionID);
+  console.log("Session:", req.session);
+  console.log("User:", req.user);
+  console.log("Is Authenticated:", req.isAuthenticated());
+  next();
+});
+
 app.use(
   cors({
     origin: config.FRONTEND_ORIGIN,
