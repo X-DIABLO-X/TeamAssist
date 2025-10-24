@@ -27,6 +27,18 @@ app.use(express.urlencoded({ extended: true }));
 
 const isProduction = config.NODE_ENV === "production";
 
+// IMPORTANT: CORS must be set up BEFORE session/passport
+app.use(
+  cors({
+    origin: config.FRONTEND_ORIGIN,
+    credentials: true,
+  })
+);
+
+if (isProduction) {
+  app.set("trust proxy", 1);
+}
+
 const sessionConfig: SessionOptions = {
   name: "session",
   secret: config.SESSION_SECRET,
@@ -37,12 +49,9 @@ const sessionConfig: SessionOptions = {
     secure: isProduction,
     httpOnly: true,
     sameSite: isProduction ? "none" : "lax",
+    domain: isProduction ? ".onrender.com" : undefined,
   },
 };
-
-if (isProduction) {
-  app.set("trust proxy", 1);
-}
 
 app.use(session(sessionConfig) as unknown as RequestHandler);
 
@@ -57,13 +66,6 @@ app.use((req, res, next) => {
   console.log("Is Authenticated:", req.isAuthenticated());
   next();
 });
-
-app.use(
-  cors({
-    origin: config.FRONTEND_ORIGIN,
-    credentials: true,
-  })
-);
 
 app.get(
   `/`,
