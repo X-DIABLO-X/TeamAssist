@@ -46,10 +46,9 @@ const sessionConfig: SessionOptions = {
   saveUninitialized: false,
   cookie: {
     maxAge: 24 * 60 * 60 * 1000,
-    secure: isProduction,
+    secure: false,
     httpOnly: true,
-    sameSite: isProduction ? "none" : "lax",
-    domain: isProduction ? ".onrender.com" : undefined,
+    sameSite: "lax",
   },
 };
 
