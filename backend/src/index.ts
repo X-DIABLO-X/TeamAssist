@@ -21,11 +21,16 @@ import projectRoutes from "./routes/project.route";
 import taskRoutes from "./routes/task.route";
 
 const app = express();
+
 const BASE_PATH = config.BASE_PATH;
 
 app.use(express.json());
-
 app.use(express.urlencoded({ extended: true }));
+
+// Fix: Set secure=false for session cookie if not HTTPS (Render free tier)
+const isRender = process.env.RENDER === "true" || process.env.RENDER_EXTERNAL_URL;
+const isProduction = config.NODE_ENV === "production";
+const isHttps = process.env.RENDER_EXTERNAL_URL?.startsWith("https://");
 
 app.use(
   session({
@@ -34,9 +39,9 @@ app.use(
     saveUninitialized: false,
     cookie: {
       maxAge: 24 * 60 * 60 * 1000,
-      secure: config.NODE_ENV === "production",
+      secure: isProduction && isHttps, // Only secure if HTTPS
       httpOnly: true,
-      sameSite: "lax",
+      sameSite: isProduction && isHttps ? "none" : "lax", // none for cross-origin HTTPS, lax for dev
     },
   })
 );
