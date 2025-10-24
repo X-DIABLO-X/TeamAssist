@@ -1,50 +1,32 @@
-# React + TypeScript + Vite
+# TeamAssist Client
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This directory contains the React front-end of TeamAssist. It provides the workspace dashboard, task management screens, and the task clarification experience that complements the backend API.
 
-Currently, two official plugins are available:
+## Scripts
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- `npm run dev` – start the Vite development server on `http://localhost:5173`.
+- `npm run build` – produce a production build in `dist/`.
+- `npm run preview` – preview the production build locally.
 
-## Expanding the ESLint configuration
+## Environment
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+The client reads API locations and OAuth callback URLs from the backend configuration. Ensure the backend `.env` file exposes `FRONTEND_ORIGIN` and `FRONTEND_GOOGLE_CALLBACK_URL` that match the host running this app (defaults to `http://localhost:5173`).
 
-- Configure the top-level `parserOptions` property like this:
+If you need client-specific overrides, create a `.env.local` file in this directory and prefix variables with `VITE_`, for example:
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```
+VITE_API_BASE_URL=http://localhost:8000/api
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+## Directory Highlights
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+- `src/components/` – UI components, including task dialogs and clarification widgets.
+- `src/hooks/` – React Query hooks for API interactions.
+- `src/context/` – authentication and workspace providers.
+- `src/lib/api.ts` – API client wrappers shared across hooks.
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+## Development Tips
+
+- Keep API changes mirrored in `src/types/api.type.ts` to maintain type safety.
+- Use the provided React Query cache keys when mutating tasks or clarifications so UI state stays in sync with the backend.
+- Tailwind CSS classes live in `index.css` and `tailwind.config.js`; update them when introducing new design tokens.

@@ -1,124 +1,108 @@
-# 🌟 Advanced MERN B2B Teams Project Management SaaS - *TeamAssist*  
+# TeamAssist
 
-## 🎥 Watch the Full Video on YouTube  
-**[Subscribe to the Channel](https://tinyurl.com/subcribe-to-techwithEmma)** to stay updated with more exciting projects and tutorials!  
+TeamAssist is a multitenant project management platform built on the MERN stack. It supports collaborative workspaces, granular roles, end-to-end task workflows, and real-time clarification threads so teams can resolve blockers quickly. The repository contains both the backend API and the React client.
 
----
+## Features
 
-## ❤️ Support the Channel
-If you love this project and want to see more, consider supporting the channel:
-- Give this repository a ⭐️ on GitHub.
-- **[Buy Me a Coffee](https://www.buymeacoffee.com/techwithemmaofficial)** to help fund more educational content.  
-- Like, share, and subscribe to the channel for more tutorials and updates!
+- Authentication with email/password sessions and Google OAuth.
+- Workspace onboarding with invite-based membership and role assignment (owner, admin, member).
+- Project and task management with priorities, assignees, due dates, and audit data.
+- Role-aware task editing that restricts updates to owners, admins, and designated assignees.
+- Clarification threads on each task so members can ask questions and owners/admins can respond.
+- Workspace analytics and filtering to surface workload trends.
+- Seed scripts and utility helpers to bootstrap role/permission data.
 
----
+## Tech Stack
 
-## 📌 Project Overview  
+- **Backend**: Node.js, Express, TypeScript, Mongoose, Passport (Google OAuth), Zod.
+- **Frontend**: React (Vite), TypeScript, TanStack Query, Tailwind CSS, Shadcn UI, Radix primitives.
+- **Database**: MongoDB.
 
-Welcome to **TeamAssist**, a powerful and scalable multi-tenancy project management system built with **Node.js**, **MongoDB**, and **React**. Designed for real-world B2B needs, this project delivers features like Google Sign-In, workspace management, project tracking, task collaboration, role-based permissions, and more. Perfect for developers aiming to create SaaS-based team collaboration platforms.  
+## Repository Layout
 
----
+```
+.
+├── backend/        # Express API, models, services, middlewares
+├── client/         # React application
+└── README.md       # Project overview (this file)
+```
 
-## 🌟 Key Features  
+## Prerequisites
 
-- 🔐 **Authentication** (Google Sign-In, Email, Password)  
-- 🏢 **Create & Manage Multiple Workspaces**  
-- 📊 **Projects & Epics Management**  
-- ✅ **Tasks** (CRUD, Status, Priority, Assignee)  
-- 👥 **Roles & Permissions** (Owner, Admin, Member)  
-- ✉️ **Invite Members to Workspaces**  
-- 🔍 **Filters & Search** (Status, Priority, AssignedTo)  
-- 📈 **Analytics Dashboard**  
-- 📅 **Pagination & Load More**  
-- 🔒 **Cookie Session Management**  
-- 🚪 **Logout & Session Termination**  
-- 🌱 **Seeding** for Test Data  
-- 💾 **Mongoose Transactions** for Robust Data Integrity  
-- 🌐 **Built with MERN Stack** (Node.js, MongoDB, React, TypeScript)  
+- Node.js 18+
+- npm 9+ or an equivalent package manager
+- MongoDB instance (local or hosted)
+- Google OAuth Client credentials for optional social sign-in
 
----
+## Environment Variables
 
-## 🚀 Tools & Technologies  
+Create a `.env` file under `backend/` using the template below. Ensure you keep real credentials out of version control.
 
-This project leverages the latest tools and frameworks for modern development:  
-
-- **Node.js**: Scalable backend architecture  
-- **React.js**: Dynamic frontend framework  
-- **MongoDB & Mongoose**: Flexible and scalable database solutions  
-- **Google OAuth**: Seamless Google Sign-In integration  
-- **TypeScript**: For a type-safe codebase  
-- **TailwindCSS & Shadcn UI**: Beautiful, responsive design  
-- **Vite.js**: Lightning-fast frontend development  
-
----
-
-## 🔄 Getting Started  
-
-### 1. Watch the Video  
-Follow along step-by-step by watching the full guide on YouTube.  
-
-### 2. Set Up Environment Variables  
-
-Create a `.env` file in the root of your project and configure these variables:  
-
-```plaintext  
+```
 PORT=8000
 NODE_ENV=development
-MONGO_URI="mongodb+srv://<username>:<password>@<>.mongodb.net/teamassist_db"  
+MONGO_URI=mongodb+srv://<username>:<password>@<cluster>/teamassist
+SESSION_SECRET=<session-secret>
 
-SESSION_SECRET="session_secret_key"
-
-GOOGLE_CLIENT_ID=<your-google-client-id>  
-GOOGLE_CLIENT_SECRET=<your-google-client-secret>  
+GOOGLE_CLIENT_ID=<google-client-id>
+GOOGLE_CLIENT_SECRET=<google-client-secret>
 GOOGLE_CALLBACK_URL=http://localhost:8000/api/auth/google/callback
 
-FRONTEND_ORIGIN=http://localhost:3000
-FRONTEND_GOOGLE_CALLBACK_URL=http://localhost:3000/google/callback
-```  
+FRONTEND_ORIGIN=http://localhost:5173
+FRONTEND_GOOGLE_CALLBACK_URL=http://localhost:5173/google/callback
+```
 
-### 3. Run the Application  
+## Local Development
 
-Install dependencies and start the development server:  
+### 1. Install dependencies
 
-```bash  
-npm install  
-npm run dev  
-```  
+```bash
+cd backend
+npm install
 
-Access the backend at `http://localhost:8000`.  
+cd ../client
+npm install
+```
 
----
+### 2. Seed base roles (optional)
 
-## 🌐 Deploying TeamAssist  
+From the `backend/` directory you can populate default roles and permissions:
 
-### 1. Add Environment Variables  
-Add the `.env` variables to your hosting platform (e.g., Vercel).  
+```bash
+npm run seed:roles
+```
 
-### 2. Deploy  
-Deploy your app using your preferred method to make it live.  
+### 3. Start the servers
 
----
+Run the API:
 
-## 📚 Comprehensive Guide  
+```bash
+cd backend
+npm run dev
+```
 
-**🚀 Deepen Your Understanding!**  
-We’ve developed an all-encompassing guide for this project that explains:  
+Run the client in a separate terminal:
 
-- The architecture and design principles behind TeamAssist  
-- Step-by-step breakdowns of each feature  
-- Advanced techniques for implementing seeding, Mongoose transactions, and performance optimizations  
-- Insights into multi-tenancy and role-based permission models  
-- Best practices for building scalable SaaS applications  
+```bash
+cd client
+npm run dev
+```
 
-This guide ensures you gain a thorough understanding of every concept and feature in TeamAssist, empowering you to build similar systems or expand upon this project.  
+The frontend defaults to `http://localhost:5173`, while the API listens on the port defined in `PORT` (8000 by default).
 
-**💡 Ready to learn more?** Check out the full guide now—**[link in the description!](#)**  
+## Testing & Linting
 
----
+- Backend scripts are defined in `backend/package.json`.
+- Client linting uses the Vite/ESLint configuration in `client/eslint.config.js`.
 
-### 📺 Like, Share & Subscribe  
+## Security Notes
 
-Don’t miss out! **[Subscribe to the Channel](https://tinyurl.com/subcribe-to-techwithEmma)** for more amazing content and exciting projects.  
+- Never commit real secrets to the repository. Use the example variables as placeholders only.
+- Rotate OAuth credentials immediately if they were previously exposed.
 
-Now, let’s dive into the demo of **TeamAssist**! 🚀
+## Further Improvements
+
+- Add end-to-end tests for the clarification workflow.
+- Integrate real-time notifications for clarification updates.
+- Automate CI/CD pipelines for backend and frontend deployments.
 
