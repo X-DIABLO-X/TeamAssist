@@ -81,7 +81,13 @@ export const logOutController = asyncHandler(
       }
     });
 
-    req.session = null;
+    // Clear session data
+    if (req.session) {
+      Object.keys(req.session).forEach(key => {
+        delete (req.session as any)[key];
+      });
+    }
+    
     return res
       .status(HTTPSTATUS.OK)
       .json({ message: "Logged out successfully" });
