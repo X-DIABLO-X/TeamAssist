@@ -1,12 +1,14 @@
 import "dotenv/config";
-import express, { NextFunction, Request, RequestHandler, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
-import session, { SessionOptions } from "express-session";
+import session from "cookie-session";
 import { config } from "./config/app.config";
 import connectDatabase from "./config/database.config";
 import { errorHandler } from "./middlewares/errorHandler.middleware";
 import { HTTPSTATUS } from "./config/http.config";
 import { asyncHandler } from "./middlewares/asyncHandler.middleware";
+import { BadRequestException } from "./utils/appError";
+import { ErrorCodeEnum } from "./enums/error-code.enum";
 
 import "./config/passport.config";
 import passport from "passport";
@@ -25,9 +27,20 @@ app.use(express.json());
 
 app.use(express.urlencoded({ extended: true }));
 
-const isProduction = config.NODE_ENV === "production";
+app.use(
+  session({
+    name: "session",
+    keys: [config.SESSION_SECRET],
+    maxAge: 24 * 60 * 60 * 1000,
+    secure: config.NODE_ENV === "production",
+    httpOnly: true,
+    sameSite: "lax",
+  })
+);
 
-// IMPORTANT: CORS must be set up BEFORE session/passport
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use(
   cors({
     origin: config.FRONTEND_ORIGIN,
@@ -35,42 +48,15 @@ app.use(
   })
 );
 
-if (isProduction) {
-  app.set("trust proxy", 1);
-}
-
-const sessionConfig: SessionOptions = {
-  name: "session",
-  secret: config.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    maxAge: 24 * 60 * 60 * 1000,
-    secure: false,
-    httpOnly: true,
-    sameSite: "lax",
-  },
-};
-
-app.use(session(sessionConfig) as unknown as RequestHandler);
-
-app.use(passport.initialize());
-app.use(passport.session());
-
-// Debug middleware to log session state
-app.use((req, res, next) => {
-  console.log("Session ID:", req.sessionID);
-  console.log("Session:", req.session);
-  console.log("User:", req.user);
-  console.log("Is Authenticated:", req.isAuthenticated());
-  next();
-});
-
 app.get(
   `/`,
   asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    throw new BadRequestException(
+      "This is a bad request",
+      ErrorCodeEnum.AUTH_INVALID_TOKEN
+    );
     return res.status(HTTPSTATUS.OK).json({
-      message: "Server is running successfully!",
+      message: "Hello Subscribe to the channel & share",
     });
   })
 );

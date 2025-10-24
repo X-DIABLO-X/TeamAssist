@@ -79,25 +79,11 @@ export const logOutController = asyncHandler(
           .status(HTTPSTATUS.INTERNAL_SERVER_ERROR)
           .json({ error: "Failed to log out" });
       }
-
-      if (req.session) {
-        req.session.destroy((destroyErr) => {
-          if (destroyErr) {
-            console.error("Session destroy error:", destroyErr);
-            return res
-              .status(HTTPSTATUS.INTERNAL_SERVER_ERROR)
-              .json({ error: "Failed to clear session" });
-          }
-
-          return res
-            .status(HTTPSTATUS.OK)
-            .json({ message: "Logged out successfully" });
-        });
-      } else {
-        return res
-          .status(HTTPSTATUS.OK)
-          .json({ message: "Logged out successfully" });
-      }
     });
+
+    req.session = null;
+    return res
+      .status(HTTPSTATUS.OK)
+      .json({ message: "Logged out successfully" });
   }
 );
