@@ -25,6 +25,8 @@ app.use(express.json());
 
 app.use(express.urlencoded({ extended: true }));
 
+const isProduction = config.NODE_ENV === "production";
+
 const sessionConfig: SessionOptions = {
   name: "session",
   secret: config.SESSION_SECRET,
@@ -32,13 +34,13 @@ const sessionConfig: SessionOptions = {
   saveUninitialized: false,
   cookie: {
     maxAge: 24 * 60 * 60 * 1000,
-    secure: config.NODE_ENV === "production",
+    secure: isProduction,
     httpOnly: true,
-    sameSite: "lax",
+    sameSite: isProduction ? "none" : "lax",
   },
 };
 
-if (config.NODE_ENV === "production") {
+if (isProduction) {
   app.set("trust proxy", 1);
 }
 
