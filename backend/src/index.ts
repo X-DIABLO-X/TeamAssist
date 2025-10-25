@@ -24,11 +24,14 @@ const app = express();
 
 const BASE_PATH = config.BASE_PATH;
 
+if (config.NODE_ENV === "production") {
+  app.set("trust proxy", 1); // Trust the first proxy
+}
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Fix: Set secure=false for session cookie if not HTTPS (Render free tier)
-const isRender = process.env.RENDER === "true" || process.env.RENDER_EXTERNAL_URL;
 const isProduction = config.NODE_ENV === "production";
 const isHttps = process.env.RENDER_EXTERNAL_URL?.startsWith("https://");
 
@@ -37,11 +40,12 @@ app.use(
     secret: config.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
+    proxy: true, // Add this for proxy environments
     cookie: {
       maxAge: 24 * 60 * 60 * 1000,
-      secure: isProduction && isHttps, // Only secure if HTTPS
+      secure: isProduction, // Should be true in production
       httpOnly: true,
-      sameSite: isProduction && isHttps ? "none" : "lax", // none for cross-origin HTTPS, lax for dev
+      sameSite: isProduction ? "none" : "lax",
     },
   })
 );
